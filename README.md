@@ -190,4 +190,4 @@ aws lambda invoke \
 - TypeScript compiling on changes is quite slow ([Checkout this GitHub issue](https://github.com/prisma-labs/serverless-plugin-typescript/issues/220))
 
 ## Contribution
-Feel free to open an issue or to create a pull request if you found an error.
+Feel free to open an issue if you found an error or to create a pull request if want to add additional content.
