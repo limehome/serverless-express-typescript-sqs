@@ -1,9 +1,9 @@
 {
   "name": "serverless-express-typescript-sqs",
   "version": "1.0.0",
-  "description": "",
+  "description": "A starter kit for a serverless producer consumer queue setup implemented with Node.js",
   "author": "Limehome GmbH",
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "start:serverless": "serverless offline start --config serverless.offline.yml --httpPort 3000 --lambdaPort 3100 --stage local --watch",
     "test": "jest --verbose --config=jest.config.js --runInBand",
