@@ -187,7 +187,7 @@ aws lambda invoke \
 2. Run `npm run serverless -- deploy --stage={stage to deploy for}` to deploy on AWS
 
 ## Known issues
-- TypeScript compiling on changes is quite slow ([Checkout this GitHub issue](https://github.com/prisma-labs/serverless-plugin-typescript/issues/220))
+- TypeScript compiling on changes is quite slow ([Check out this GitHub issue](https://github.com/prisma-labs/serverless-plugin-typescript/issues/220))
 
 ## Contribution
 Feel free to open an issue if you found an error or to create a pull request if want to add additional content.
