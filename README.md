@@ -18,6 +18,8 @@ The goal is that you can use this code base to add your domain logic on top of i
     - [Change handling of unexpected errors during endpoint access](#change-handling-of-unexpected-errors-during-endpoint-access)
     - [Change validation error response format](#change-validation-error-response-format)
     - [Change Dead Letter Queue behavior](#change-dead-letter-queue-behavior)
+    - [Define environment variables (local)](#define-environment-variables-local)
+    - [Define secrets (AWS Lambda)](#define-secrets-aws-lambda)
   - [Run locally](#run-locally)
     - [Install and start project](#install-and-start-project)
     - [Produce message](#produce-message)
@@ -49,14 +51,14 @@ The project consists out of two serverless functions:
     - Message will stay in that queue for a specific time (Maximum 7 days) and will not be processed anymore
 
 ## Purpose
-There are scenarios in which the processing of a message in the consumer could fail unexpectedly. For the example an api could become temporarly unavailable. This queue architecture makes sure that the messages will be kept and processing will be retried multiple times.
+There are scenarios in which the processing of a message in the consumer could fail unexpectedly. For the example an api could become temporarly unavailable. This queue architecture makes sure that the messages will be kept and processing retried multiple times.
 
 ## Content
 The project was created with TypeScript and Node.js. It contains the following content:
 
 - Serverless setup for AWS Lambda with [Serverless](https://www.npmjs.com/package/serverless) framework
 - SQS interaction with [AWS SDK](https://www.npmjs.com/package/aws-sdk)
-- Queue error handling setup again with [AWS SDK](https://www.npmjs.com/package/aws-sdk)
+- Queue error handling setup with [AWS SDK](https://www.npmjs.com/package/aws-sdk)
 - Http server setup with [Express](https://www.npmjs.com/package/express)
 - Request validation with [Express validator](https://www.npmjs.com/package/express-validator)
 - Swagger setup with [Swagger UI Express](https://www.npmjs.com/package/swagger-ui-express)
@@ -88,7 +90,7 @@ The project was created with TypeScript and Node.js. It contains the following c
 
 **`/src` folder**
 - `/src` contains the main source code of the project.
-- Folder structure similar typical Express applications
+- Folder structure similar to typical Express projects
 
 ## Development guides
 The following section provides you a short guide on how to change or add functionalities. 
@@ -97,14 +99,14 @@ You can also read the comments in the source code of the files to get more infor
 ### Create a new service or controller
 1. Create a new folder with the service or controller name (e.g `/src/services/log`)
 2. Create a file for the class (e.g `/src/services/log/log.service.ts`)
-    - You can use dependecy injection
-3. Create a file that contains a exported instance of that class (e.g `/src/services/index.ts`).
-    - Here you then can import exported instances of other services or controllers
+    - You can use dependency injection to access other services
+3. Create a file that contains an exported instance of that class (e.g `/src/services/index.ts`).
+    - Here you then can import exported instances of other services or controllers to inject them
 4. Create a unit test file (e.g `/test/services/log.service.spec.ts`)
 
 ### Add a new http endpoint
 1. Create a new router or add a route to an existing router in `/src/routers`
-2. Create a new validator for that route in `/src/validators` and use it as middleware in the route
+2. Create a new validator for that route in `/src/validators` and use it as middleware for that route
    - Do not forget to always add the validation check middleware (`/src/validator.middleware.ts`) right after you used a new validation middleware
 3. Add a controller as shown in the section before that will be called from the new route
 4. Add a service as shown in the section before that will called from the new controller
@@ -113,13 +115,13 @@ You can also read the comments in the source code of the files to get more infor
 
 ### Define message processing logic
 1. Go to file `/src/services/event/event.service.ts`
-2. Define in body of function `processMessage : (message: DequeuedMessage) => Promise<void>` how to process the item
-3. Or you can create also a new service for the processing and use it with dependency injection
-4. Checkout the file for more specific information
+2. In the function `processMessage : (message: DequeuedMessage) => Promise<void>` of class `EventService` you can define how to process the message
+3. Or you can create also a seperate service for message processing and use it with dependency injection
+4. Check out the file for more specific information
 
 ### Add a new serverless function
 1. Add a new file with the function in `src` (e.g `/src/example-function.ts`)
-2. Use an exported instance of a service here
+2. To call a service you can import an exported instance
 3. Add the serverless function to `functions` section in `serverless.yml`
 
 ### Change handling of unexpected errors during endpoint access
@@ -133,10 +135,21 @@ You can also read the comments in the source code of the files to get more infor
 2. `resources.Resources.MessagesQueue.Properties.RedrivePolicy.maxReceiveCount` represents the number of times a message that caused a retriable error should be retried
 3. `resources.Resources.DeadLetterMessagesQueue.Properties.MessageRetentionPeriod` represents the maximum time in seconds a message should be stored in the dead letter queue 
 
+### Define environment variables (local)
+1. Add the new environment variable to `.env` file (and also to `.env.example` as reference)
+2. Add the variable to `/test/.env.test`
+3. Use the variable in the `provider.environment` section in `serverless.offline.yml`
+4. Use the variable in `/src/constants/environment.constants.ts`
+
+### Define secrets (AWS Lambda)
+1. Follow the steps which are explained in the local section
+2. Add the variable to `secrets.yml` file for the different stages (and also to `secrets.yml.example` as reference)
+3. Use the variable in the `provider.environment` section in `serverless.yml`
+
 ## Run locally
 Right now there is no configuration setup to run this project in the exact same way as on AWS.
 You can check out [LocalStack](https://github.com/localstack/localstack) to simulate AWS services on your local computer.
-When running the project locally there are no automatic triggerings of serverless functions. So you have to call the functions manually to test them.
+When running the project locally without LocalStack there is no automatic triggering of serverless functions. So you have to call the functions manually to test them. If you run the project with `ENVIRONMENT=local` every interaction with SQS will be realized with a mocked queue service (`/services/queue/local-queue.service.ts`). You can change that behavior in `/services/queue/index.ts` to always use the real service (`/services/queue/sqs-queue.service.ts`). 
 
 ### Install and start project
 1. Clone the repository
@@ -151,7 +164,7 @@ When running the project locally there are no automatic triggerings of serverles
 
 ### Consume messages
 1. Install the [AWS CLI](https://aws.amazon.com/cli/)
-2. Create a file that can contains mocked queue messages
+2. Create a payload file that can contains mocked queue messages
 ```json
 {
     "Records": [
@@ -179,15 +192,16 @@ aws lambda invoke \
 2. Run `npm run test:watch` to tests in interactive mode
 
 ### Format
-1. Run `npm run format` to format all files with prettier
+1. Run `npm run format` to format all files with Prettier
 2. Run `npm run format:check` if all files are formatted correctly
 
 ## Deploy on AWS
-1. Create a `secrects.yml` file based on `secrects.yaml.example`
-2. Run `npm run serverless -- deploy --stage={stage to deploy for}` to deploy on AWS
+1. Read about [serverless deploying](https://www.serverless.com/framework/docs/providers/aws/guide/deploying/)
+2. Create a `secrects.yml` file based on `secrects.yml.example`
+3. Run `npm run serverless -- deploy --stage={stage to deploy for}` to deploy on AWS
 
 ## Known issues
 - TypeScript compiling on changes is quite slow ([Check out this GitHub issue](https://github.com/prisma-labs/serverless-plugin-typescript/issues/220))
 
 ## Contribution
-Feel free to open an issue if you found an error or to create a pull request if want to add additional content.
+Feel free to open an issue if you found any error or to create a pull request if want to add additional content.
