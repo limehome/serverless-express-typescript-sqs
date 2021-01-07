@@ -1,0 +1,64 @@
+service: serverless-express-typescript-sqs
+frameworkVersion: '2'
+
+plugins:
+  - serverless-plugin-typescript
+
+package:
+  individually: true
+  exclude:
+    - coverage/**
+    - test/**
+    - secrets.yml
+  include:
+    - docs/api-spec.yml
+
+custom:
+  secrets: ${file(./secrets.yml):${self:provider.stage}}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: ${opt:stage, 'develop'}
+  timeout: 20
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+        - sqs:DeleteMessageBatch
+      Resource:
+        - Fn::GetAtt: [MessagesQueue, Arn]
+  environment:
+    ENVIRONMENT: ${self:custom.secrets.ENVIRONMENT}
+
+functions:
+  serverless-producer:
+    handler: src/serverless-producer.handler
+    memorySize: 512
+    timeout: 5
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+  serverless-consumer:
+    handler: src/serverless-consumer.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - MessagesQueue
+              - Arn
+resources:
+  Resources:
+    MessagesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt DeadLetterMessagesQueue.Arn
+          maxReceiveCount: 3
+    DeadLetterMessagesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        # seven days
+        MessageRetentionPeriod: 604800

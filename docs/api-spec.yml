@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: serverless-express-typescript-sqs
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/local
+    description: Local serverless API
+
+paths:
+  /produce-message:
+    post:
+      description: >
+        Adds a message with a specified payload to a queue.
+      operationId: produceMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+      responses:
+        '200':
+          description: Message has been added to the queue.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  payload:
+                    $ref: '#/components/schemas/QueuedMessage'
+        default:
+          $ref: '#/components/responses/DefaultErrorResponse'
+
+components:
+  schemas:
+    Message:
+      type: object
+      required:
+        - payload
+      properties:
+        payload:
+          description: >
+            Defines the payload of the message. Should be between 2 and 1000 characters long.
+          type: string
+    QueuedMessage:
+      properties:
+        id:
+          description: >
+            Specified the id of the message in the sqs queue
+          type: string
+        payload:
+          $ref: '#/components/schemas/Message'
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string 
+  responses:
+    DefaultErrorResponse:
+      description: Body is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+        

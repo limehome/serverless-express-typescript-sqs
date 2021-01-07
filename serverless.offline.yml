@@ -1,0 +1,19 @@
+service: ${file(./serverless.yml):service}
+
+useDotenv: true
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+package: ${file(./serverless.yml):package}
+
+provider:
+  name: ${file(./serverless.yml):provider.name}
+  runtime: ${file(./serverless.yml):provider.runtime}
+  region: ${file(./serverless.yml):provider.region}
+  stage: local
+  environment:
+    ENVIRONMENT: ${env:ENVIRONMENT}
+
+functions: ${file(./serverless.yml):functions}

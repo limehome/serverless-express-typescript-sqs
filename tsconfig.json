@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "target": "es2017",
+    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "strict": true,
+    "lib": ["es2020.string", "es2019.array", "es2020.promise"]
+  },
+  "exclude": [
+    "bin",
+    "coverage",
+    "node_modules",
+    "dist",
+    ".build",
+    ".serverless",
+    "_optimize",
+    "_warmup"
+  ]
+}
