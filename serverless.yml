@@ -31,6 +31,8 @@ provider:
         - Fn::GetAtt: [MessagesQueue, Arn]
   environment:
     ENVIRONMENT: ${self:custom.secrets.ENVIRONMENT}
+    MESSAGE_QUEUE_URL: { Ref: MessagesQueue }
+
 
 functions:
   serverless-producer:
@@ -57,8 +59,10 @@ resources:
         RedrivePolicy:
           deadLetterTargetArn: !GetAtt DeadLetterMessagesQueue.Arn
           maxReceiveCount: 3
+        # Two minutes
+        VisibilityTimeout: 120
     DeadLetterMessagesQueue:
       Type: AWS::SQS::Queue
       Properties:
-        # seven days
+        # Seven days
         MessageRetentionPeriod: 604800

@@ -14,10 +14,11 @@ The goal is that you can use this code base to add your domain logic on top of i
     - [Create a new service or controller](#create-a-new-service-or-controller)
     - [Add a new http endpoint](#add-a-new-http-endpoint)
     - [Define message processing logic](#define-message-processing-logic)
+    - [Change Dead Letter Queue behavior](#change-dead-letter-queue-behavior)
+    - [Change message processing retry interval time](#change-message-processing-retry-interval-time)
     - [Add a new serverless function](#add-a-new-serverless-function)
     - [Change handling of unexpected errors during endpoint access](#change-handling-of-unexpected-errors-during-endpoint-access)
     - [Change validation error response format](#change-validation-error-response-format)
-    - [Change Dead Letter Queue behavior](#change-dead-letter-queue-behavior)
     - [Define environment variables (local)](#define-environment-variables-local)
     - [Define secrets (AWS Lambda)](#define-secrets-aws-lambda)
   - [Run locally](#run-locally)
@@ -119,6 +120,15 @@ You can also read the comments in the source code of the files to get more infor
 3. Or you can create also a seperate service for message processing and use it with dependency injection
 4. Check out the file for more specific information
 
+### Change Dead Letter Queue behavior
+1. Go to file `serverless.yml` into section `resources.Resources`
+2. `resources.Resources.MessagesQueue.Properties.RedrivePolicy.maxReceiveCount` represents the number of times a message that caused a retriable error should be retried
+3. `resources.Resources.DeadLetterMessagesQueue.Properties.MessageRetentionPeriod` represents the maximum time in seconds a message should be stored in the dead letter queue
+
+### Change message processing retry interval time
+1. Go to file `serverless.yml` into section `resources.Resources.MessagesQueue.Properties`
+2. After a minimum time of `VisibilityTimeout - consumer execution time` (in seconds) the consumer will pick up a failed message that should be retried again
+
 ### Add a new serverless function
 1. Add a new file with the function in `src` (e.g `/src/example-function.ts`)
 2. To call a service you can import an exported instance
@@ -128,12 +138,7 @@ You can also read the comments in the source code of the files to get more infor
 1. Modify the function in `/src/middlewares/error.middleware.ts`
 
 ### Change validation error response format
-1. Modify the function in `/src/middlewares/validator.middleware.ts`
-
-### Change Dead Letter Queue behavior
-1. Go to file `serverless.yml` into section `resources.Resources`
-2. `resources.Resources.MessagesQueue.Properties.RedrivePolicy.maxReceiveCount` represents the number of times a message that caused a retriable error should be retried
-3. `resources.Resources.DeadLetterMessagesQueue.Properties.MessageRetentionPeriod` represents the maximum time in seconds a message should be stored in the dead letter queue 
+1. Modify the function in `/src/middlewares/validator.middleware.ts` 
 
 ### Define environment variables (local)
 1. Add the new environment variable to `.env` file (and also to `.env.example` as reference)
