@@ -3,11 +3,12 @@ import { QueuedMessage } from './../../interfaces/queued-message.interface';
 import { MESSAGE_QUEUE_URL } from './../../constants/environment.constants';
 import { Message } from './../../interfaces/message.interface';
 import { SQS } from 'aws-sdk';
+import { QueueService } from '../../interfaces/queue-service.interface';
 
 /**
  * Service to handle different sqs queue actions
  */
-export class SqsQueueService {
+export class SqsQueueService implements QueueService {
   constructor(private readonly sqsClient: SQS) {}
 
   /**
