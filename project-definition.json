@@ -1,9 +1,9 @@
 {
-    "$schema": "https://hub.dev.limehome.com/schemas/project-definition-v2.schema.json",
-    "project": {
-        "name": "serverless-express-typescript-sqs",
-        "type": "other",
-        "summary": "Starter: producer Lambda (HTTP → SQS) and consumer Lambda with retry and DLQ",
-        "description": "Template for a producer-consumer setup: HTTP producer enqueues to SQS, consumer Lambda processes with retry and DLQ. Built with Express, TypeScript, and Serverless. Documents adding endpoints, message handling, DLQ behavior, retry interval, and local run. Purpose is reliable processing when downstream is temporarily unavailable."
-    }
+  "$schema": "https://hub.dev.limehome.com/schemas/project-definition-v2.schema.json",
+  "project": {
+    "name": "serverless-express-typescript-sqs",
+    "type": "other",
+    "summary": "Starter: producer Lambda (HTTP → SQS) and consumer Lambda with retry and DLQ",
+    "description": "Template for a producer-consumer setup: HTTP producer enqueues to SQS, consumer Lambda processes with retry and DLQ. Built with Express, TypeScript, and Serverless. Documents adding endpoints, message handling, DLQ behavior, retry interval, and local run. Purpose is reliable processing when downstream is temporarily unavailable."
+  }
 }
