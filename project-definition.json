@@ -3,7 +3,7 @@
   "project": {
     "name": "serverless-express-typescript-sqs",
     "type": "other",
-    "summary": "Starter: producer Lambda (HTTP → SQS) and consumer Lambda with retry and DLQ",
-    "description": "Template for a producer-consumer setup: HTTP producer enqueues to SQS, consumer Lambda processes with retry and DLQ. Built with Express, TypeScript, and Serverless. Documents adding endpoints, message handling, DLQ behavior, retry interval, and local run. Purpose is reliable processing when downstream is temporarily unavailable."
+    "summary": "Starter template for a reliable async producer-consumer setup with retry and dead-letter handling",
+    "description": "A starter template for reliable asynchronous processing: an HTTP producer enqueues work to a queue and a consumer processes messages with configurable retry and dead-letter recovery. Intended for services that need resilient processing when downstream systems may be temporarily unavailable."
   }
 }
