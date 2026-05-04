@@ -1,5 +1,7 @@
 # serverless-express-typescript-sqs
 
+**Note: this project is no longer maintained and should no longer be used**
+
 This project provides a full starter kit for a [serverless](https://www.serverless.com/) producer consumer queue setup implemented with [AWS Lambda](https://aws.amazon.com/lambda) and [SQS](https://aws.amazon.com/sqs/).
 The goal is that you can use this code base to add your domain logic on top of it. 
 
