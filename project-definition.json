@@ -1,0 +1,10 @@
+{
+  "$schema": "https://hub.dev.limehome.com/schemas/project-definition-v2.schema.json",
+  "project": {
+    "name": "serverless-express-typescript-sqs",
+    "type": "other",
+    "summary": "Starter template for a reliable async producer-consumer setup with retry and dead-letter handling",
+    "description": "A starter template for reliable asynchronous processing: an HTTP producer enqueues work to a queue and a consumer processes messages with configurable retry and dead-letter recovery. Intended for services that need resilient processing when downstream systems may be temporarily unavailable.",
+    "owners": ["unowned"]
+  }
+}
